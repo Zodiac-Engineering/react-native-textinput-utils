@@ -12,10 +12,10 @@
 #import "RCTConvert.h"
 #import "RCTTextField.h"
 #import "RCTTextView.h"
-#import "RCTSparseArray.h"
 #import "RCTUIManager.h"
 #import "RCTEventDispatcher.h"
 #import "RCTKeyboardPicker.h"
+#import "RCTKeyboardDatePicker.h"
 #import "RCTTextViewExtension.h"
 
 @implementation RCTKeyboardToolbar
@@ -33,7 +33,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
                   options:(NSDictionary *)options
                   callback:(RCTResponseSenderBlock)callback) {
-    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
         
         UIView *view = viewRegistry[reactNode];
         if (!view) {
@@ -94,6 +94,31 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
             textView.inputView = pickerView;
         }
         
+        BOOL datePicker = [RCTConvert BOOL:options[@"datePicker"]];
+        
+        if(datePicker) {
+            
+            RCTKeyboardDatePicker *datePickerView = [[RCTKeyboardDatePicker alloc]init];
+            
+            NSString *datePickerMode = [RCTConvert NSString:options[@"datePickerMode"]];
+            
+            if([datePickerMode isEqualToString:@"date"]) {
+                datePickerView.datePickerMode = UIDatePickerModeDate;
+            }
+            else if([datePickerMode isEqualToString:@"time"]) {
+                datePickerView.datePickerMode = UIDatePickerModeTime;
+            }
+            else if ([datePickerMode isEqualToString:@"countdown"]) {
+                datePickerView.datePickerMode = UIDatePickerModeCountDownTimer;
+            }
+            
+            datePickerView.tag = [currentUid intValue];
+            
+            [datePickerView setCallbackObject:self withSelector:@selector(dateValueSelected:)];
+            
+            textView.inputView = datePickerView;
+        }
+        
         [numberToolbar sizeToFit];
         textView.inputAccessoryView = numberToolbar;
         
@@ -102,7 +127,7 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
 }
 
 RCT_EXPORT_METHOD(dismissKeyboard:(nonnull NSNumber *)reactNode) {
-    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
         
         UIView *view = viewRegistry[reactNode];
         if (!view) {
@@ -118,7 +143,7 @@ RCT_EXPORT_METHOD(dismissKeyboard:(nonnull NSNumber *)reactNode) {
 }
 
 RCT_EXPORT_METHOD(moveCursorToLast:(nonnull NSNumber *)reactNode) {
-    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
         
         UIView *view = viewRegistry[reactNode];
         if (!view) {
@@ -136,7 +161,7 @@ RCT_EXPORT_METHOD(moveCursorToLast:(nonnull NSNumber *)reactNode) {
 
 RCT_EXPORT_METHOD(setSelectedTextRange:(nonnull NSNumber *)reactNode
                   options:(NSDictionary *)options) {
-    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
         
         UIView *view = viewRegistry[reactNode];
         if (!view) {
@@ -158,6 +183,27 @@ RCT_EXPORT_METHOD(setSelectedTextRange:(nonnull NSNumber *)reactNode
     }];
 }
 
+RCT_EXPORT_METHOD(setDate:(nonnull NSNumber *)reactNode
+                  options:(NSDictionary *)options) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
+        
+        UIView *view = viewRegistry[reactNode];
+        if (!view) {
+            RCTLogError(@"RCTKeyboardToolbar: TAG #%@ NOT FOUND", reactNode);
+            return;
+        }
+        
+        UIDatePicker *textView = ((UIDatePicker *)view.inputView);
+        
+        NSDate *date = [RCTConvert NSDate:options[@"date"]];
+        NSLog(@"setting Date to %@", date);
+        [textView setDate: date];
+        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//        });
+    }];
+}
+
 - (void)valueSelected:(RCTKeyboardPicker*)sender
 {
     NSNumber *selectedIndex = [NSNumber numberWithLong:[sender selectedRowInComponent:0]];
@@ -165,6 +211,19 @@ RCT_EXPORT_METHOD(setSelectedTextRange:(nonnull NSNumber *)reactNode
     NSNumber *currentUid = [NSNumber numberWithLong:sender.tag];
     [self.bridge.eventDispatcher sendDeviceEventWithName:@"keyboardPickerViewDidSelected"
                                                     body:@{@"currentUid" : [currentUid stringValue], @"selectedIndex": [selectedIndex stringValue]}];
+}
+
+- (void)dateValueSelected:(RCTKeyboardDatePicker*)sender
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+    
+    NSString *stringFromDate = [formatter stringFromDate:[sender date]];
+    
+    NSNumber *currentUid = [NSNumber numberWithLong:sender.tag];
+    NSLog(@"selected date %@", stringFromDate);
+    [self.bridge.eventDispatcher sendDeviceEventWithName:@"keyboardDatePickerViewDidSelected"
+                                                    body:@{@"currentUid" : [currentUid stringValue], @"selectedDate": stringFromDate}];
 }
 
 - (void)keyboardCancel:(UIBarButtonItem*)sender
