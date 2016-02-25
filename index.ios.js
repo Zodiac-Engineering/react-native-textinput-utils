@@ -103,6 +103,15 @@ class RCTKeyboardToolbarManager {
     var nodeHandle = React.findNodeHandle(node);
     KeyboardToolbar.setDate(nodeHandle, NSDate);
   }
+  static setPickerRowByIndex(node, NSInteger) {
+    var nodeHandle = React.findNodeHandle(node);
+    KeyboardToolbar.setPickerRowByIndex(nodeHandle, NSInteger);
+  }
+    static reloadPickerData(node, NSArray) {
+    var nodeHandle = React.findNodeHandle(node);
+    KeyboardToolbar.reloadPickerData(nodeHandle, NSArray);
+  }
+
 }
 
 class RCTKeyboardToolbarTextInput extends Component {
@@ -152,6 +161,19 @@ class RCTKeyboardToolbarTextInput extends Component {
   setDate(date) {
     RCTKeyboardToolbarManager.setDate(this.refs['MygKD'], {
       date: date
+    });
+  }
+  setPickerRowByIndex(index) {
+    RCTKeyboardToolbarManager.setPickerRowByIndex(this.refs['MygKD'], {
+      index: index
+    });
+  } 
+  reloadPickerData(data) {
+     data = data.map((eachData) => {
+        return eachData.label;
+      });
+    RCTKeyboardToolbarManager.reloadPickerData(this.refs['MygKD'], {
+      data
     });
   } 
   render() {

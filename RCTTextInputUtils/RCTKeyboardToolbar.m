@@ -85,6 +85,7 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
         numberToolbar.items = toolbarItems;
         
         NSArray *pickerData = [RCTConvert NSArray:options[@"pickerViewData"]];
+        NSLog(@"%@", pickerData);
         
         if (pickerData.count > 0) {
             RCTKeyboardPicker *pickerView = [[RCTKeyboardPicker alloc]init];
@@ -183,6 +184,50 @@ RCT_EXPORT_METHOD(setSelectedTextRange:(nonnull NSNumber *)reactNode
     }];
 }
 
+RCT_EXPORT_METHOD(setPickerRowByIndex:(nonnull NSNumber *)reactNode
+                  options:(NSDictionary *)options) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
+        
+        UIView *view = viewRegistry[reactNode];
+        if (!view) {
+            RCTLogError(@"RCTKeyboardToolbar: TAG #%@ NOT FOUND", reactNode);
+            return;
+        }
+        
+        UIPickerView *textView = ((UIPickerView *)view.inputView);
+        
+        NSInteger *index = [RCTConvert NSInteger:options[@"index"]];
+        
+        [textView selectRow: index inComponent:0 animated:YES];
+        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//        });
+    }];
+}
+
+RCT_EXPORT_METHOD(reloadPickerData:(nonnull NSNumber *)reactNode
+                  options:(NSDictionary *)options) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
+        
+        UIView *view = viewRegistry[reactNode];
+        if (!view) {
+            RCTLogError(@"RCTKeyboardToolbar: TAG #%@ NOT FOUND", reactNode);
+            return;
+        }
+        
+        RCTKeyboardPicker *textView = ((RCTKeyboardPicker *)view.inputView);
+        
+        NSArray *data = [RCTConvert NSArray:options[@"data"]];
+        
+        NSLog(@"%@", data);
+        [textView setData: data];
+        [textView reloadAllComponents];
+        
+        //        dispatch_async(dispatch_get_main_queue(), ^{
+        //        });
+    }];
+}
+
 RCT_EXPORT_METHOD(setDate:(nonnull NSNumber *)reactNode
                   options:(NSDictionary *)options) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary *viewRegistry) {
@@ -199,8 +244,8 @@ RCT_EXPORT_METHOD(setDate:(nonnull NSNumber *)reactNode
         NSLog(@"setting Date to %@", date);
         [textView setDate: date];
         
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//        });
+        //        dispatch_async(dispatch_get_main_queue(), ^{
+        //        });
     }];
 }
 
