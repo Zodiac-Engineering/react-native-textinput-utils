@@ -27,8 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		55AE45911C7B63D30004C943 /* RCTKeyboardDatePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTKeyboardDatePicker.h; sourceTree = "<group>"; };
-		55AE45921C7B63D30004C943 /* RCTKeyboardDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTKeyboardDatePicker.m; sourceTree = "<group>"; };
+		55AE45911C7B63D30004C943 /* RCTKeyboardDatePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTKeyboardDatePicker.h; path = RCTTextInputUtils/RCTKeyboardDatePicker.h; sourceTree = "<group>"; };
+		55AE45921C7B63D30004C943 /* RCTKeyboardDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTKeyboardDatePicker.m; path = RCTTextInputUtils/RCTKeyboardDatePicker.m; sourceTree = "<group>"; };
 		EA8030391BF2BCDD002D36C5 /* RCTKeyboardPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTKeyboardPicker.h; path = RCTTextInputUtils/RCTKeyboardPicker.h; sourceTree = "<group>"; };
 		EA80303A1BF2BCDD002D36C5 /* RCTKeyboardPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTKeyboardPicker.m; path = RCTTextInputUtils/RCTKeyboardPicker.m; sourceTree = "<group>"; };
 		EA80303B1BF2BCDD002D36C5 /* RCTKeyboardToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTKeyboardToolbar.h; path = RCTTextInputUtils/RCTKeyboardToolbar.h; sourceTree = "<group>"; };
