@@ -143,6 +143,7 @@ class RCTKeyboardToolbarTextInput extends Component {
       pickerViewData: pickerViewData,
       datePicker: 'datePicker' in this.props ? this.props.datePicker : false,
       datePickerMode: this.props.datePickerMode,
+      borderBottom: this.props.borderBottom,
       tintColor: processColor(this.props.tintColor)
     }, callbacks);
   }
@@ -167,7 +168,7 @@ class RCTKeyboardToolbarTextInput extends Component {
     RCTKeyboardToolbarManager.setPickerRowByIndex(this.refs['MygKD'], {
       index: index
     });
-  } 
+  }
   reloadPickerData(data) {
      data = data.map((eachData) => {
         return eachData.label;
@@ -175,7 +176,7 @@ class RCTKeyboardToolbarTextInput extends Component {
     RCTKeyboardToolbarManager.reloadPickerData(this.refs['MygKD'], {
       data
     });
-  } 
+  }
   render() {
     return (
       <TextInput

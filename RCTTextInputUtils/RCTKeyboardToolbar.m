@@ -58,18 +58,30 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
             textView.tintColor = [RCTConvert UIColor:options[@"tintColor"]];
         }
         
+       
+        
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         CGFloat screenHeight = screenRect.size.height;
         
         UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
-        UIView* borderView = [[UIView alloc]initWithFrame:CGRectMake(0, 43, screenWidth, 0.5)];
-        borderView.backgroundColor  = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.40];
-        [numberToolbar addSubview:borderView];
+       
         NSInteger toolbarStyle = [RCTConvert NSInteger:options[@"barStyle"]];
+        
+        if (options[@"borderBottom"]) {
+            BOOL* tester = [RCTConvert BOOL:options[@"borderBottom"]];
+            if(tester) {
+                UIView* borderView = [[UIView alloc]initWithFrame:CGRectMake(0, 43, screenWidth, 0.5)];
+                borderView.backgroundColor  = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.40];
+                [numberToolbar addSubview:borderView];
+
+            }
+        }
+        
         numberToolbar.barStyle = toolbarStyle;
         numberToolbar.backgroundColor = [UIColor whiteColor];
         numberToolbar.barTintColor = [UIColor whiteColor];
+        numberToolbar.clipsToBounds = YES;
         
         numberToolbar.tintColor = [UIColor colorWithRed:0.329 green:0.329 blue:0.329 alpha:1.00];
         NSString *leftButtonText = [RCTConvert NSString:options[@"leftButtonText"]];
@@ -82,6 +94,10 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
             UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithTitle:[leftButtonText uppercaseString] style:UIBarButtonItemStyleDone target:self action:@selector(keyboardCancel:)];
             leftItem.tag = [currentUid intValue];
             [toolbarItems addObject:leftItem];
+            
+            [leftItem setTitleTextAttributes:@{
+                 NSFontAttributeName: [UIFont fontWithName:@"MuseoSans700-700" size:18.0],
+                 } forState:UIControlStateNormal];
         }
         if (![leftButtonText isEqualToString:@""] && ![rightButtonText isEqualToString:@""]) {
             [toolbarItems addObject:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
@@ -89,6 +105,9 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
         if (![rightButtonText isEqualToString:@""]) {
             UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithTitle:[rightButtonText uppercaseString] style:UIBarButtonItemStyleDone target:self action:@selector(keyboardDone:)];
             rightItem.tag = [currentUid intValue];
+            [rightItem setTitleTextAttributes:@{
+                                               NSFontAttributeName: [UIFont fontWithName:@"MuseoSans700-700" size:18.0],
+                                               } forState:UIControlStateNormal];
             [toolbarItems addObject:rightItem];
         }
         numberToolbar.items = toolbarItems;
@@ -209,8 +228,8 @@ RCT_EXPORT_METHOD(setPickerRowByIndex:(nonnull NSNumber *)reactNode
         
         [textView selectRow: index inComponent:0 animated:YES];
         
-        //        dispatch_async(dispatch_get_main_queue(), ^{
-        //        });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//        });
     }];
 }
 
