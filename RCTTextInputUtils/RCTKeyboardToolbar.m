@@ -57,12 +57,21 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
             NSLog(@"tintColor is %@", options[@"tintColor"]);
             textView.tintColor = [RCTConvert UIColor:options[@"tintColor"]];
         }
-
-        UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
         
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
+        CGFloat screenHeight = screenRect.size.height;
+        
+        UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
+        UIView* borderView = [[UIView alloc]initWithFrame:CGRectMake(0, 43, screenWidth, 0.5)];
+        borderView.backgroundColor  = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.40];
+        [numberToolbar addSubview:borderView];
         NSInteger toolbarStyle = [RCTConvert NSInteger:options[@"barStyle"]];
         numberToolbar.barStyle = toolbarStyle;
+        numberToolbar.backgroundColor = [UIColor whiteColor];
+        numberToolbar.barTintColor = [UIColor whiteColor];
         
+        numberToolbar.tintColor = [UIColor colorWithRed:0.329 green:0.329 blue:0.329 alpha:1.00];
         NSString *leftButtonText = [RCTConvert NSString:options[@"leftButtonText"]];
         NSString *rightButtonText = [RCTConvert NSString:options[@"rightButtonText"]];
         
@@ -70,7 +79,7 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
         
         NSMutableArray *toolbarItems = [NSMutableArray array];
         if (![leftButtonText isEqualToString:@""]) {
-            UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithTitle:leftButtonText style:UIBarButtonItemStyleBordered target:self action:@selector(keyboardCancel:)];
+            UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithTitle:[leftButtonText uppercaseString] style:UIBarButtonItemStyleDone target:self action:@selector(keyboardCancel:)];
             leftItem.tag = [currentUid intValue];
             [toolbarItems addObject:leftItem];
         }
@@ -78,7 +87,7 @@ RCT_EXPORT_METHOD(configure:(nonnull NSNumber *)reactNode
             [toolbarItems addObject:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
         }
         if (![rightButtonText isEqualToString:@""]) {
-            UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithTitle:rightButtonText style:UIBarButtonItemStyleDone target:self action:@selector(keyboardDone:)];
+            UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithTitle:[rightButtonText uppercaseString] style:UIBarButtonItemStyleDone target:self action:@selector(keyboardDone:)];
             rightItem.tag = [currentUid intValue];
             [toolbarItems addObject:rightItem];
         }
@@ -200,8 +209,8 @@ RCT_EXPORT_METHOD(setPickerRowByIndex:(nonnull NSNumber *)reactNode
         
         [textView selectRow: index inComponent:0 animated:YES];
         
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//        });
+        //        dispatch_async(dispatch_get_main_queue(), ^{
+        //        });
     }];
 }
 
